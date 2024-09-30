@@ -91,7 +91,7 @@
             $.each(dataList, function (key,data) {
 
 
-                $("#tab1").append("<tr> <td>"+data.ID+" </td> <td>"+data.CategoryName+" </td> <td>"+data.Description+" </td></tr>");
+                $("#tab1").append("<tr> <td>" + data.ID + " </td> <td>" + data.CategoryName + " </td> <td>" + data.Description + " </td> <td> <button data-id='" + data.ID + "' class='btn btn-warning' value='update'> Güncelle </button>  </td> <td> <button class='btn btn-danger' data-id='" + data.ID + "' value='delete'> Sil </button> </td> <td> <button class='btn btn-success' data-id='" + data.ID + "' value='select'> Sec </button> </td> </tr>");
 
 
             })
@@ -104,7 +104,8 @@
 
         function BringData(data) {
             ControlHeader();
-            $("#tab1").append("<tr> <td>" + data.ID + " </td> <td>" + data.CategoryName + " </td> <td>" + data.Description + " </td></tr>");
+
+            $("#tab1").append("<tr> <td>" + data.ID + " </td> <td>" + data.CategoryName + " </td> <td>" + data.Description + " </td> <td> <button data-id='" + data.ID + "' class='btn btn-warning' value='update'> Güncelle </button>  </td> <td> <button class='btn btn-danger' data-id='" + data.ID + "' value='delete'> Sil </button> </td> <td> <button class='btn btn-success' data-id='" + data.ID + "' value='select'> Sec </button> </td> </tr>");
         }
 
 
@@ -116,6 +117,148 @@
             $("#txtDesc").val(data.Description);
         }
 
+
+        $(function () {
+
+            //Kategorileri listelemek
+
+            $("#btnAll").click(function () {
+                //API'ya ulasmak icin AJAX metodunu kullanırsınız...Acılımı Asynchronous JavaScript And XML'dir... Ajax sayfanızın görünürde loading yapmadan sayfanın degişmesini saglar...Bunun yanında API'ya ulasmak icin en rahat yontemlerden biridir...
+
+                $.ajax({
+                    url: "http://localhost:54418/api/Category/GetCategories",
+                    type: "Get",
+                    success: function (kategoriler) {
+                        BringDataList(kategoriler);
+                    }
+                })
+            })
+
+
+            //Kategori Getir
+            $("#btnID").click(function () {
+
+                $.ajax({
+                    url: "http://localhost:54418/api/Category/GetCategory", //Burada dilerseniz data parametresinde Json verisi göndermek yerine URL'e direkt  /+$("#txtID").val() ifadesi eklenebilir...Ama eger böyle yapacaksanız GetCategory'den sonra slash koymayı unutmayın...Ve bir de bu ancak gitmek istediginiz Action parametresinin ismi RouteMap'inizdeki isimle uyuyorsa gecerlidir...
+                    data: { id: $("#txtID").val() },
+                    type: "Get",
+                    success: function (data) {
+                        BringData(data);
+                    }
+
+
+                });
+
+
+            });
+
+
+            //Kategori ekle
+
+            $("#btnAdd").click(function () {
+                $.ajax({
+                    url: "http://localhost:54418/api/Category/AddCategory",
+                    type: "Post",
+                    data: { Name: $("#txtName").val(), Description: $("#txtDesc").val() },
+                    success: function (kategoriler) {
+                        BringDataList(kategoriler);
+                    }
+                })
+            })
+
+            //Kategori Güncelleme
+
+            $("#btnUpdate").click(function () {
+                $.ajax({
+                    url: "http://localhost:54418/api/Category/UpdateCategory",
+                    type: "Put",
+                    data: { ID: $("#txtID").val(), Name: $("#txtName").val(), Description: $("#txtDesc").val() },
+                    success: function (kategoriler) {
+                        BringDataList(kategoriler);
+                    }
+                })
+            })
+
+            //Kategori Sil
+            //Siz Delete tipinde bir request yaptıgınız zaman data ile veri gönderemezsiniz...
+
+            $("#btnDelete").click(function () {
+                $.ajax({
+                    url: "http://localhost:54418/api/Category/DeleteCategory/" + $("#txtID").val(),
+                    type: "Delete",
+                    success: function (kategoriler) {
+                        BringDataList(kategoriler);
+                    }
+                })
+            });
+
+
+            //Kategori Ara
+            $("#txtSearch").keyup(function () {
+                $.ajax({
+                    url: "http://localhost:54418/api/Category/SearchCategory",
+                    type: "Get",
+                    data: { item: $(this).val() },
+                    success: function (kategoriler) {
+
+                        BringDataList(kategoriler);
+                    }
+                })
+            });
+
+
+
+            //JS EventHandling - Jquery'de on metodu runtime'da olusacak eventlerin ifadesini vermek icin kullanılır
+
+            //Update
+
+            $("#tab1").on("click", "[value=update]", function(){
+
+                $.ajax({
+                    url: "http://localhost:54418/api/Category/UpdateCategory",
+                    type: "Put",
+                    data: { ID: $(this).attr("data-id"), Name: $("#txtName").val(), Description: $("#txtDesc").val() },
+                    success: function (kategoriler) {
+                        BringDataList(kategoriler);
+                    }
+                })
+
+
+
+            })
+
+            //Delete
+            $("#tab1").on("click", "[value=delete]", function () {
+
+                $.ajax({
+                    url: "http://localhost:54418/api/Category/DeleteCategory/"+$(this).attr("data-id"),
+                    type: "Delete",
+                    success: function (kategoriler) {
+                        BringDataList(kategoriler);
+                    }
+                })
+
+
+
+            })
+
+            //Select
+            $("#tab1").on("click", "[value=select]", function () {
+
+                $.ajax({
+                    url: "http://localhost:54418/api/Category/GetCategory",
+                    type: "Get",
+                    data: { id: $(this).attr("data-id") },
+                    success: function (data) {
+                        FetchData(data);
+                    }
+                })
+
+
+
+            })
+
+        })
 
 
     </script>
