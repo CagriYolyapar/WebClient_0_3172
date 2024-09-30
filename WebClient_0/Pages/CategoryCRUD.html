@@ -132,7 +132,7 @@
                         BringDataList(kategoriler);
                     }
                 })
-            })
+            });
 
 
             //Kategori Getir
@@ -164,7 +164,7 @@
                         BringDataList(kategoriler);
                     }
                 })
-            })
+            });
 
             //Kategori Güncelleme
 
@@ -177,7 +177,7 @@
                         BringDataList(kategoriler);
                     }
                 })
-            })
+            });
 
             //Kategori Sil
             //Siz Delete tipinde bir request yaptıgınız zaman data ile veri gönderemezsiniz...
@@ -212,7 +212,7 @@
 
             //Update
 
-            $("#tab1").on("click", "[value=update]", function(){
+            $("#tab1").on("click", "[value=update]", function () {
 
                 $.ajax({
                     url: "http://localhost:54418/api/Category/UpdateCategory",
@@ -225,13 +225,13 @@
 
 
 
-            })
+            });
 
             //Delete
             $("#tab1").on("click", "[value=delete]", function () {
 
                 $.ajax({
-                    url: "http://localhost:54418/api/Category/DeleteCategory/"+$(this).attr("data-id"),
+                    url: "http://localhost:54418/api/Category/DeleteCategory/" + $(this).attr("data-id"),
                     type: "Delete",
                     success: function (kategoriler) {
                         BringDataList(kategoriler);
@@ -240,7 +240,7 @@
 
 
 
-            })
+            });
 
             //Select
             $("#tab1").on("click", "[value=select]", function () {
@@ -256,7 +256,7 @@
 
 
 
-            })
+            });
 
         })
 
